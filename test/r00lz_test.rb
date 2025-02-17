@@ -15,4 +15,24 @@ class R00lzTest < Minitest::Test
     def test_auto_require_controllers
         assert Object.const_get("TestController")
     end
+
+    def test_render
+        env = {}
+        
+        controller = R00lz::Controller.new(env)
+
+        view_dir = "app/views"
+        FileUtils.mkdir_p(view_dir)
+
+        view_path = "#{view_dir}/sample.html.erb"
+        File.write(view_path, "Hello, <%= @thing %>")
+
+        controller.instance_variable_set(:@thing, "World")
+
+        result = controller.render(:sample)
+
+        assert_equal "Hello, World", result
+
+        File.delete(view_path)
+    end
 end
