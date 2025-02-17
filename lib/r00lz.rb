@@ -1,6 +1,14 @@
 require "r00lz/version"
 
 module R00lz
+  def self.to_underscore(s)
+    s.gsub(
+      /([A-Z]+)([A-Z][a-z])/,
+      '\1_\2').gsub(
+      /([a-z\d])([A-Z])/,
+      '\1_\2').downcase
+  end
+
   class App
     def call(env)
       kl, act = cont_and_act(env)
@@ -23,7 +31,13 @@ module R00lz
     end
   end
 
-
   class Error < StandardError; end
   # Your code goes here...
+end
+
+class Object
+  def self.const_missing(c)
+    require R00lz.to_underscore(c.to_s)
+    Object.const_get(c)
+  end
 end
