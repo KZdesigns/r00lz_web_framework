@@ -1,5 +1,5 @@
 require "r00lz/version"
-
+require "erb"
 
 module R00lz
   def self.to_underscore(s)
@@ -24,7 +24,6 @@ module R00lz
     end
   end
 
-  require "erb"
   class Controller 
     attr_reader :env
 
