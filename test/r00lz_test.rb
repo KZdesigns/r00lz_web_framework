@@ -4,6 +4,11 @@ class TedController < R00lz::Controller
     def think
         "Whoa, man..."
     end
+
+    def think_more
+        noun = params['noun']
+        "I was just thinking about #{noun}"
+    end
 end
 
 class R00lzTest < Minitest::Test
@@ -34,5 +39,20 @@ class R00lzTest < Minitest::Test
         assert_equal "Hello, World", result
 
         File.delete(view_path)
+    end
+
+    def test_params
+        e = {"PATH_INFO" => "/ted/think_more", "QUERY_STRING"=>"noun=code", "REQUEST_METHOD"=>"GET",  "rack.input"=>"#"}
+        response = ::R00lz::App.new.call(e)
+        assert_equal 200, response[0]
+        assert_equal "I was just thinking about code", response[2][0]
+    end
+
+    def test_file_model
+        fn = "test/data.json"
+        File.write(fn, '{"test": "data"}')
+        fm = FileModel.new(fn)
+        assert_equal "data", fm['test']
+        File.delete(fn)
     end
 end

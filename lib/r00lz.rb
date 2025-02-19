@@ -36,10 +36,36 @@ module R00lz
       e = ERB.new(File.read(template))
       e.result(b)
     end
+
+    def request
+      @request ||= Rack::Request.new(@env)
+    end
+
+    def params
+      request.params
+    end
   end
 
   class Error < StandardError; end
   # Your code goes here...
+end
+
+class FileModel
+  def initialize(fn)
+    @fn = fn
+    cont = File.read(fn)
+    @hash = JSON.load(cont)
+  end
+
+  def[](field)
+    @hash[field.to_s]
+  end
+
+  def self.find(id)
+    self.new("data/#{id}.json")
+  rescue
+    nil
+  end
 end
 
 class Object
